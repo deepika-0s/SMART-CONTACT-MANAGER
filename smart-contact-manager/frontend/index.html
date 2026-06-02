@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Contact Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Animated background orbs ─────────────────────────────────────────── -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── App Shell ────────────────────────────────────────────────────────── -->
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header glass">
+      <div class="header-brand">
+        <span class="brand-icon">◈</span>
+        <h1 class="brand-title">ContactOS</h1>
+        <span class="brand-badge">DSA-Powered</span>
+      </div>
+      <div class="header-meta">
+        <span class="meta-chip" id="contactCount">0 contacts</span>
+        <span class="meta-chip cache-chip" id="cacheStatus">Cache: —</span>
+      </div>
+    </header>
+
+    <!-- Main layout -->
+    <main class="main">
+
+      <!-- LEFT: Add / Edit Panel -->
+      <aside class="panel panel-form glass">
+        <div class="panel-header">
+          <h2 class="panel-title" id="formTitle">Add Contact</h2>
+          <div class="panel-line"></div>
+        </div>
+
+        <div class="form-body">
+          <input type="hidden" id="editId" />
+
+          <div class="field">
+            <label class="field-label" for="inputName">Name</label>
+            <input class="field-input" id="inputName" type="text" placeholder="Jane Doe" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="inputPhone">Phone</label>
+            <input class="field-input" id="inputPhone" type="text" placeholder="+91 98765 43210" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="inputEmail">Email</label>
+            <input class="field-input" id="inputEmail" type="email" placeholder="jane@example.com" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="inputTags">Tags <span class="field-hint">(comma separated)</span></label>
+            <input class="field-input" id="inputTags" type="text" placeholder="work, design, vip" autocomplete="off" />
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="submitBtn" onclick="handleSubmit()">
+              <span class="btn-icon">+</span> Add Contact
+            </button>
+            <button class="btn btn-ghost" id="cancelBtn" onclick="cancelEdit()" style="display:none">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- DSA Info Panel -->
+        <div class="dsa-info glass-inner">
+          <p class="dsa-label">⚡ DSA Active</p>
+          <div class="dsa-chips">
+            <span class="dsa-chip trie">Trie Search</span>
+            <span class="dsa-chip lru">LRU Cache</span>
+            <span class="dsa-chip graph">Graph BFS</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT: Contacts + Search -->
+      <section class="panel panel-contacts">
+
+        <!-- Search bar -->
+        <div class="search-wrapper glass">
+          <span class="search-icon">⌕</span>
+          <input
+            class="search-input"
+            id="searchInput"
+            type="text"
+            placeholder="Prefix search via Trie…"
+            oninput="handleSearch()"
+            autocomplete="off"
+          />
+          <span class="search-badge" id="searchBadge" style="display:none">Trie</span>
+          <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none">✕</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" id="tabAll" onclick="switchTab('all')">All Contacts</button>
+          <button class="tab" id="tabGraph" onclick="switchTab('graph')">Network Graph</button>
+        </div>
+
+        <!-- Contacts list -->
+        <div class="contacts-list" id="contactsList">
+          <div class="empty-state" id="emptyState">
+            <span class="empty-icon">◉</span>
+            <p>No contacts yet. Add your first one!</p>
+          </div>
+        </div>
+
+        <!-- Graph view -->
+        <div class="graph-view" id="graphView" style="display:none">
+          <div class="graph-canvas-wrap glass">
+            <canvas id="graphCanvas" width="600" height="380"></canvas>
+            <p class="graph-hint">Circles = contacts · Lines = relationships · Click a node to see BFS network</p>
+          </div>
+          <div class="graph-result glass" id="graphResult" style="display:none">
+            <h3 class="graph-result-title">Network from <span id="graphRootName"></span></h3>
+            <div id="graphResultList"></div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- ── Toast Notification ───────────────────────────────────────────────── -->
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
